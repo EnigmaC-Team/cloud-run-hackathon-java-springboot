@@ -13,6 +13,8 @@ import java.util.Random;
 @RestController
 public class Application {
 
+  public int r = 1;
+
   static class Self {
     public String href;
   }
@@ -57,7 +59,8 @@ public class Application {
   public String index(@RequestBody ArenaUpdate arenaUpdate) {
     System.out.println(arenaUpdate);
     String[] commands = new String[]{"F", "R", "L", "T"};
-    int i = new Random().nextInt(4);
+    int i = this.r == 1 ? 3 : 1;
+    this.r = i;
     return commands[i];
   }
 
