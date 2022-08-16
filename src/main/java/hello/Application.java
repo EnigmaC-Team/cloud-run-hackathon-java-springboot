@@ -17,8 +17,9 @@ public class Application {
   public String r = "R";
   public int score = 0;
 
-  public boolean scoreFlag = false;
+  public boolean hitFlagDone = false;
 
+  public boolean wasHitFlag = false;
   public int count = 0;
 
   static class Self {
@@ -65,29 +66,33 @@ public class Application {
   public String index(@RequestBody ArenaUpdate arenaUpdate) {
 //    System.out.println(arenaUpdate);
 //    String[] commands = new String[]{"F", "R", "L", "T"};
+    PlayerState playerState = arenaUpdate.arena.state.get(arenaUpdate._links.self.href);
     this.r = Objects.equals(this.r, "T") ? "R" : "T";
-    if(this.r.equals("T")){
-      count++;
+
+    if(playerState.score > this.score) {
+      this.hitFlagDone = true;
+      this.score = playerState.score;
       this.r = "T";
-      return "tetap T";
-    }
-    int score = arenaUpdate.arena.state.get(arenaUpdate._links.self.href).score;
-    if(score != this.score) {
-      this.scoreFlag = true;
-      this.score = score;
-      this.r = "T";
-      return "Score Beda T";
-    } else if (scoreFlag) {
-      scoreFlag = false;
+      return "kita hit T";
+    } else if (hitFlagDone) {
+      hitFlagDone = false;
       this.r = "R";
-      return "score sama R";
-    }
-    count++;
-    if(count >= 4){
+      return "hit selesai R";
+    } else if(wasHitFlag){
+      wasHitFlag = false;
+      return "maju setelah kena hit F";
+    } else if (playerState.wasHit || playerState.score < this.score) {
+      wasHitFlag = true;
+      this.score = playerState.score;
+      this.r = "R";
+      return "kita kena hit R";
+    } else if(count >= 4){
       count = new Random().nextInt(4);
-      return "counting F";
+      return "ini countdown F";
+    } else if(this.r.equals("R")){
+      count++;
     }
-    return "pass " + this.r;
+    return this.r;
   }
 
 }
