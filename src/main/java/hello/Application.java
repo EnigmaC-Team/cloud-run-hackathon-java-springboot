@@ -73,22 +73,22 @@ public class Application {
       this.hitFlagDone = true;
       this.score = playerState.score;
       this.r = "T";
-      return "kita hit T";
+      return "T";
     } else if (hitFlagDone) {
       hitFlagDone = false;
       this.r = "R";
-      return "hit selesai R";
+      return "R";
     } else if(wasHitFlag){
       wasHitFlag = false;
-      return "maju setelah kena hit F";
+      return "F";
     } else if (playerState.wasHit || playerState.score < this.score) {
       wasHitFlag = true;
       this.score = playerState.score;
       this.r = "R";
-      return "kita kena hit R";
+      return "R";
     } else if(count >= 4){
       count = new Random().nextInt(4);
-      return "ini countdown F";
+      return "F";
     } else if(this.r.equals("R")){
       count++;
     }
