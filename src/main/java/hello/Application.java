@@ -7,13 +7,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 @SpringBootApplication
 @RestController
 public class Application {
 
-  public int r = 1;
+  public String r = "R";
+  public int score = 0;
+
+  public boolean scoreFlag = false;
+
+  public int count = 0;
 
   static class Self {
     public String href;
@@ -57,11 +63,31 @@ public class Application {
 
   @PostMapping("/**")
   public String index(@RequestBody ArenaUpdate arenaUpdate) {
-    System.out.println(arenaUpdate);
-    String[] commands = new String[]{"F", "R", "L", "T"};
-    int i = this.r == 1 ? 3 : 1;
-    this.r = i;
-    return commands[i];
+//    System.out.println(arenaUpdate);
+//    String[] commands = new String[]{"F", "R", "L", "T"};
+    this.r = Objects.equals(this.r, "T") ? "R" : "T";
+    if(this.r.equals("T")){
+      count++;
+      this.r = "T";
+      return "tetap T";
+    }
+    int score = arenaUpdate.arena.state.get(arenaUpdate._links.self.href).score;
+    if(score != this.score) {
+      this.scoreFlag = true;
+      this.score = score;
+      this.r = "T";
+      return "Score Beda T";
+    } else if (scoreFlag) {
+      scoreFlag = false;
+      this.r = "R";
+      return "score sama R";
+    }
+    count++;
+    if(count >= 4){
+      count = new Random().nextInt(4);
+      return "counting F";
+    }
+    return "pass " + this.r;
   }
 
 }
