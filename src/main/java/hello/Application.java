@@ -19,7 +19,6 @@ public class Application {
 
   public boolean hitFlagDone = false;
 
-
   public boolean wasHitFlag = false;
   public int count = 0;
 
